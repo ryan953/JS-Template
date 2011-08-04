@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>Readme</title>
+</head>
+<body>
+
+<h1>A simple JavaScript template class.</h1>
+
+<p>Has an example helper function Template.get() which can be used for caching DOM lookups if many replacements are done on the page. This functions depends on jQuery.</p>
+
+<h2>Usage:</h2>
+<p>This example assumes jQuery is loaded on the page.</p>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="./template.js"></script>
+<!-- our sample webpage -->
+<table id="todo-app">
+	<tr>
+		<th>Completed</th>
+		<th>Name</th>
+		<th>Due Date</th>
+	</tr>
+</table>
+
+<!-- the template, served in the html (or loaded after the page is ready) -->
+<script type="text/html" id="todo-template">
+<tr>
+	<td>{isDone}</td>
+	<td>{name}</td>
+	<td>{dueDate}</td>
+</tr>
+</script>
+
+<!-- the brains of the operation -->
+<script type="text/javascript">
+// The function that takes the data and shows it
+function showTodoItems(the_list) {
+	var tmpl = Template.get('#todo-template');
+	for(var i in the_list.items) {
+		var item = the_list.items[i];
+		item.isDone = function() { 
+			return (this.complete ? 'yes' : 'no');
+		};
+		var html = Template.replace(tmpl, item);
+		console.debug(html);
+		$('#todo-app').append(html);
+	}
+}
+
+// Some sample data simulating an ajax call
+var sample_data = {items:[
+	{complete:true, name:'Buy Candy', dueDate:'October 30th'},
+	{complete:false, name:'Dress Up', dueDate:'Halloween'},
+	{complete:false, name:'Eat Candy', dueDate:'November 1st'},
+]};
+
+$(document).ready(function() {
+	// $.get('/todo/list.json', showTodoItems);
+	showTodoItems(sample_data);
+});
+
+
+</script>
+
+</body>
+</html>
